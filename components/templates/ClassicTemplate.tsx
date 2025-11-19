@@ -8,9 +8,12 @@ import { createValidUrl, createWhatsAppLink, formatPhoneLink, getInitials } from
 
 import { TemplateRendererProps } from './types';
 
+const PRIMARY_COLOR = '#1e3a8a';
+const SECONDARY_COLOR = '#3b82f6';
+
 export function ClassicTemplate({ card, links }: TemplateRendererProps) {
-  const primaryColor = card.theme_primary || '#1e3a8a';
-  const secondaryColor = card.theme_secondary || '#3b82f6';
+  const primaryColor = PRIMARY_COLOR;
+  const secondaryColor = SECONDARY_COLOR;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 md:p-8">

@@ -25,8 +25,6 @@ export type Card = {
   facebook_url: string | null;
   whatsapp_number: string | null;
   whatsapp_enabled: boolean;
-  theme_primary: string;
-  theme_secondary: string;
   template_id: string | null;
   is_published: boolean;
   created_at: string;

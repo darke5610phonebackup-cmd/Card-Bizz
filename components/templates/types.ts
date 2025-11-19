@@ -1,3 +1,5 @@
+import type { JSX } from 'react';
+
 import { Card, CardLink, CardTemplate } from '@/lib/supabase';
 
 export interface TemplateRendererProps {

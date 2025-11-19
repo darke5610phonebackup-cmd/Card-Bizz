@@ -8,8 +8,10 @@ import { createValidUrl, createWhatsAppLink, formatPhoneLink, getInitials } from
 
 import { TemplateRendererProps } from './types';
 
+const PRIMARY_COLOR = '#0f172a';
+
 export function MinimalTemplate({ card, links }: TemplateRendererProps) {
-  const primaryColor = card.theme_primary || '#000000';
+  const primaryColor = PRIMARY_COLOR;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 md:p-8 bg-white dark:bg-gray-900">

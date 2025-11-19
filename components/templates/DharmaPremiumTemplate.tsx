@@ -28,12 +28,16 @@ const openWindow = (href: string, target: '_blank' | '_self' = '_blank') => {
 
 const formatCustomLinks = (links: CardLink[]) => links.filter((link) => Boolean(link.value));
 
+const PRIMARY_COLOR = '#f97316';
+const SECONDARY_COLOR = '#111827';
+
 export function DharmaPremiumTemplate({ card, links }: TemplateRendererProps) {
-  const primaryColor = card.theme_primary || '#f97316';
-  const secondaryColor = card.theme_secondary || '#111827';
+  const primaryColor = PRIMARY_COLOR;
+  const secondaryColor = SECONDARY_COLOR;
   const phoneNumber = sanitizePhone(card.phone_number);
   const whatsappNumber =
     card.whatsapp_enabled && card.whatsapp_number ? sanitizePhone(card.whatsapp_number) : undefined;
+  const websiteUrl = createValidUrl(card.website_url);
 
   const actionButtons: ActionButton[] = [
     card.phone_number && {
@@ -57,16 +61,15 @@ export function DharmaPremiumTemplate({ card, links }: TemplateRendererProps) {
       accentClass: 'text-blue-600',
       onClick: () => openWindow(`mailto:${card.email}`, '_self'),
     },
-    card.website_url && {
+    websiteUrl
+      ? {
       key: 'website',
       label: 'Website',
       icon: Globe,
       accentClass: 'text-purple-600',
-      onClick: () =>
-        openWindow(
-          card.website_url.startsWith('http') ? card.website_url : `https://${card.website_url}`
-        ),
-    },
+        onClick: () => openWindow(websiteUrl),
+      }
+      : null,
   ].filter(Boolean) as ActionButton[];
 
   const contactDetails = [

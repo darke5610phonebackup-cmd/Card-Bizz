@@ -17,9 +17,12 @@ import { createValidUrl, createWhatsAppLink, formatPhoneLink, getInitials } from
 
 import { TemplateRendererProps } from './types';
 
+const PRIMARY_COLOR = '#3b82f6';
+const SECONDARY_COLOR = '#1e40af';
+
 export function ModernTemplate({ card, links }: TemplateRendererProps) {
-  const primaryColor = card.theme_primary || '#3b82f6';
-  const secondaryColor = card.theme_secondary || '#1e40af';
+  const primaryColor = PRIMARY_COLOR;
+  const secondaryColor = SECONDARY_COLOR;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 md:p-8">
