@@ -106,7 +106,7 @@ export async function fetchCardByPublicId(
     return null;
   }
 
-  const { data: links = [] } = await supabase
+  const { data: links } = await supabase
     .from('card_links')
     .select('*')
     .eq('card_id', card.id)
@@ -122,5 +122,5 @@ export async function fetchCardByPublicId(
     template = templateData;
   }
 
-  return { card, links, template };
+  return { card, links: links || [], template };
 }
