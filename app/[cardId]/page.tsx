@@ -1,51 +1,16 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { supabase, type CardLink, type CardTemplate } from '@/lib/supabase';
+import { fetchCardByPublicId, type CardLink, type CardTemplate } from '@/lib/supabase';
 import { CardDisplay } from '@/components/CardDisplay';
 
 type Props = {
   params: Promise<{ cardId: string }>;
 };
 
-// Fetch card data
-async function getCardData(publicId: string) {
-  // Fetch card by public_id (encrypted URL param)
-  const { data: card, error: cardError } = await supabase
-    .from('cards')
-    .select('*')
-    .eq('public_id', publicId)
-    .eq('is_published', true)
-    .maybeSingle();
-
-  if (cardError || !card) {
-    return null;
-  }
-
-  // Fetch card links
-  const { data: links = [] } = await supabase
-    .from('card_links')
-    .select('*')
-    .eq('card_id', card.id)
-    .order('order_index', { ascending: true });
-
-  // Fetch template
-  let template = null;
-  if (card.template_id) {
-    const { data: templateData } = await supabase
-      .from('card_templates')
-      .select('*')
-      .eq('id', card.template_id)
-      .maybeSingle();
-    template = templateData;
-  }
-
-  return { card, links, template };
-}
-
 // Generate metadata for SEO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { cardId } = await params;
-  const data = await getCardData(cardId);
+  const data = await fetchCardByPublicId(cardId);
 
   if (!data) {
     return {
@@ -77,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CardPage({ params }: Props) {
   const { cardId } = await params;
-  const data = await getCardData(cardId);
+  const data = await fetchCardByPublicId(cardId);
 
   if (!data) {
     notFound();
