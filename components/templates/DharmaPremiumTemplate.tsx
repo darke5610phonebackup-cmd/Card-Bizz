@@ -1,11 +1,11 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
 
-import { Phone, MessageCircle, Mail, Globe, LinkIcon } from 'lucide-react';
+import { Phone, MessageCircle, Mail, Globe, LinkIcon, Share2 } from 'lucide-react';
+import Image from 'next/image';
 
 import { SaveContactButton } from '@/components/SaveContactButton';
 import { CardLink } from '@/lib/supabase';
-import { cn, createValidUrl } from '@/lib/utils';
+import { cn, createValidUrl, getInitials } from '@/lib/utils';
 
 import { TemplateRendererProps } from './types';
 
@@ -28,12 +28,14 @@ const openWindow = (href: string, target: '_blank' | '_self' = '_blank') => {
 
 const formatCustomLinks = (links: CardLink[]) => links.filter((link) => Boolean(link.value));
 
-const PRIMARY_COLOR = '#f97316';
-const SECONDARY_COLOR = '#111827';
+const THEME = {
+  primary: '#f97316',
+  secondary: '#111827',
+};
 
 export function DharmaPremiumTemplate({ card, links }: TemplateRendererProps) {
-  const primaryColor = PRIMARY_COLOR;
-  const secondaryColor = SECONDARY_COLOR;
+  const primaryColor = THEME.primary;
+  const secondaryColor = THEME.secondary;
   const phoneNumber = sanitizePhone(card.phone_number);
   const whatsappNumber =
     card.whatsapp_enabled && card.whatsapp_number ? sanitizePhone(card.whatsapp_number) : undefined;
@@ -63,10 +65,10 @@ export function DharmaPremiumTemplate({ card, links }: TemplateRendererProps) {
     },
     websiteUrl
       ? {
-      key: 'website',
-      label: 'Website',
-      icon: Globe,
-      accentClass: 'text-purple-600',
+        key: 'website',
+        label: 'Website',
+        icon: Globe,
+        accentClass: 'text-purple-600',
         onClick: () => openWindow(websiteUrl),
       }
       : null,
@@ -81,108 +83,112 @@ export function DharmaPremiumTemplate({ card, links }: TemplateRendererProps) {
   const customLinks = formatCustomLinks(links);
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center p-4">
+    <div className="relative min-h-screen bg-[#f8fafc] flex items-center justify-center p-4 overflow-hidden">
+
+      {/* Animated Background Blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full blur-3xl" style={{ backgroundColor: `${primaryColor}30` }} />
-        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 rounded-full blur-2xl" style={{ backgroundColor: `${secondaryColor}25` }} />
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-orange-300/20 rounded-full blur-[100px] mix-blend-multiply animate-blob" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-300/20 rounded-full blur-[100px] mix-blend-multiply animate-blob animation-delay-2000" />
+        <div className="absolute -bottom-32 left-20 w-[500px] h-[500px] bg-pink-300/20 rounded-full blur-[100px] mix-blend-multiply animate-blob animation-delay-4000" />
       </div>
 
       <div className="w-full max-w-md relative z-10">
-        <div className="bg-white/80 backdrop-blur-xl border border-white/50 rounded-3xl p-8 shadow-2xl shadow-gray-900/10 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-transparent to-gray-50/30 rounded-3xl" />
+        <div className="bg-white/70 backdrop-blur-2xl border border-white/60 rounded-[2.5rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
+
+          {/* Subtle Noise Texture */}
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay pointer-events-none" />
 
           <div className="relative z-10 space-y-8">
-            <div className="text-center space-y-8">
+            <div className="text-center space-y-6">
+
+              {/* Company Logo Area */}
               <div className="flex justify-center">
-                <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200/50 shadow-lg shadow-gray-900/5 relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/80 to-transparent rounded-2xl" />
+                <div className="bg-white/80 rounded-2xl p-4 border border-white shadow-sm relative group transition-transform hover:scale-105 duration-300 min-w-[4rem] min-h-[4rem] flex items-center justify-center">
                   {card.company_logo_url ? (
-                    <img
-                      src={card.company_logo_url}
-                      alt={card.company || 'Company logo'}
-                      className="h-16 w-auto relative z-10 object-contain"
-                      loading="lazy"
-                    />
+                    <div className="relative w-24 h-12">
+                      <Image
+                        src={card.company_logo_url}
+                        alt={card.company || 'Company logo'}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
                   ) : (
-                    <div className="h-16 w-16 flex items-center justify-center text-xs font-semibold text-gray-400 uppercase relative z-10">
-                      Logo
+                    <div className="flex items-center justify-center text-gray-300">
+                      <Share2 className="w-6 h-6" />
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="relative mx-auto w-36 h-36">
-                <div className="absolute -inset-4 rounded-full blur-lg" style={{ background: `${primaryColor}30` }} />
-                <div className="absolute -inset-2 rounded-full shadow-xl" style={{ background: 'linear-gradient(135deg, #fff, #f8fafc)' }} />
+              {/* Avatar */}
+              <div className="relative mx-auto w-32 h-32">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-orange-400 to-purple-500 blur-lg opacity-40 animate-pulse" />
                 {card.avatar_url ? (
-                  <img
-                    src={card.avatar_url}
-                    alt={card.full_name || 'Profile'}
-                    className="relative w-full h-full object-cover rounded-full border-4 border-white shadow-2xl shadow-gray-900/20"
-                    loading="lazy"
-                  />
+                  <div className="relative w-full h-full rounded-full border-[3px] border-white shadow-lg overflow-hidden">
+                    <Image
+                      src={card.avatar_url}
+                      alt={card.full_name || 'Profile'}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 ) : (
                   <div
-                    className="relative w-full h-full rounded-full border-4 border-white shadow-2xl shadow-gray-900/20 flex items-center justify-center text-3xl font-semibold text-white"
-                    style={{ backgroundColor: primaryColor }}
+                    className="relative w-full h-full rounded-full border-[3px] border-white shadow-lg flex items-center justify-center text-3xl font-bold text-white bg-gradient-to-br from-orange-400 to-pink-500"
                   >
-                    {card.full_name
-                      ?.split(' ')
-                      .map((part) => part[0])
-                      .join('')
-                      .slice(0, 2)
-                      .toUpperCase()}
+                    {getInitials(card.full_name)}
                   </div>
                 )}
-                <div className="absolute -inset-1 border-2 border-gray-200/50 rounded-full" />
               </div>
 
-              <div className="space-y-4">
-                <h1 className="text-3xl font-semibold text-gray-900 drop-shadow-sm">{card.full_name}</h1>
+              {/* Info */}
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{card.full_name}</h1>
                 {card.title && (
                   <p className="text-base font-medium text-gray-500">{card.title}</p>
                 )}
                 {card.company && (
-                  <>
-                    <div className="w-16 h-1 mx-auto rounded-full shadow-lg" style={{ background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})`, boxShadow: `0 5px 15px ${primaryColor}40` }} />
-                    <h2 className="text-xl font-medium drop-shadow-sm uppercase tracking-wide" style={{ color: primaryColor }}>
-                      {card.company}
-                    </h2>
-                  </>
-                )}
-                {card.bio && (
-                  <p className="text-sm text-gray-600 font-medium tracking-wide">{card.bio}</p>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-orange-50 text-orange-700 text-xs font-bold uppercase tracking-wider">
+                    {card.company}
+                  </div>
                 )}
               </div>
+
+              {card.bio && (
+                <p className="text-sm text-gray-600 leading-relaxed max-w-xs mx-auto">{card.bio}</p>
+              )}
             </div>
 
+            {/* Action Grid */}
             {actionButtons.length > 0 && (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 {actionButtons.map((action) => (
                   <button
                     key={action.key}
                     type="button"
                     onClick={action.onClick}
-                    className="bg-gradient-to-br from-white to-gray-50 hover:from-gray-50 hover:to-white text-gray-800 border border-gray-200/50 h-14 rounded-2xl font-medium transition-all duration-300 shadow-xl shadow-gray-900/10 hover:shadow-2xl hover:shadow-gray-900/15 hover:-translate-y-1 backdrop-blur-sm relative overflow-hidden group"
+                    className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-800 border border-gray-100 h-14 rounded-2xl font-semibold transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 group"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-transparent to-gray-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <action.icon className={cn('w-5 h-5 mr-2 relative z-10', action.accentClass)} />
-                    <span className="relative z-10">{action.label}</span>
+                    <action.icon className={cn('w-5 h-5 transition-transform group-hover:scale-110', action.accentClass)} />
+                    <span>{action.label}</span>
                   </button>
                 ))}
               </div>
             )}
 
+            {/* Save Contact */}
             <SaveContactButton
               card={card}
               links={links}
-              className="w-full bg-gradient-to-br from-white to-gray-50 hover:from-gray-50 hover:to-white text-gray-800 border border-gray-200/50 h-14 rounded-2xl font-medium transition-all duration-300 shadow-xl shadow-gray-900/10 hover:shadow-2xl hover:shadow-gray-900/15 hover:-translate-y-1 backdrop-blur-sm relative overflow-hidden group"
-              iconClassName="text-orange-600"
+              className="w-full bg-gray-900 hover:bg-gray-800 text-white h-14 rounded-2xl font-bold transition-all duration-300 shadow-lg shadow-gray-900/20 hover:shadow-xl hover:-translate-y-0.5"
+              iconClassName="text-orange-400"
             />
 
+            {/* Footer Links */}
             {(contactDetails.length > 0 || customLinks.length > 0) && (
-              <div className="text-center space-y-3 text-sm pt-8 border-t border-gray-200/50 relative">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+              <div className="text-center space-y-4 pt-6 border-t border-gray-100">
+
                 {contactDetails.map((detail, index) => (
                   <p key={`${detail.label}-${index}`} className={detail.className}>
                     {detail.label}
@@ -190,7 +196,7 @@ export function DharmaPremiumTemplate({ card, links }: TemplateRendererProps) {
                 ))}
 
                 {customLinks.length > 0 && (
-                  <div className="flex flex-col gap-2 pt-2">
+                  <div className="flex flex-col gap-3 pt-2">
                     {customLinks.map((link) => {
                       const href = createValidUrl(link.value) || link.value;
                       return (
@@ -199,10 +205,10 @@ export function DharmaPremiumTemplate({ card, links }: TemplateRendererProps) {
                           href={href ?? '#'}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center gap-2 text-gray-700 font-medium hover:text-orange-600 transition-colors"
+                          className="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:bg-white transition-all group"
                         >
-                          <LinkIcon className="w-4 h-4" />
-                          <span>{link.label || link.type}</span>
+                          <span className="text-gray-700 font-medium group-hover:text-orange-600 transition-colors">{link.label || link.type}</span>
+                          <LinkIcon className="w-4 h-4 text-gray-400 group-hover:text-orange-500" />
                         </a>
                       );
                     })}
@@ -216,4 +222,3 @@ export function DharmaPremiumTemplate({ card, links }: TemplateRendererProps) {
     </div>
   );
 }
-

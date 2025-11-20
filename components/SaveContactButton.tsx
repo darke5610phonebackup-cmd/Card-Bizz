@@ -122,13 +122,22 @@ export function SaveContactButton({
       onClick={handleDownload}
       disabled={isGenerating}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-70',
+        'inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 disabled:active:scale-100',
         className
       )}
       aria-busy={isGenerating}
     >
-      {!hideIcon && <Download className={cn('w-5 h-5', iconClassName)} />}
-      <span>{isGenerating ? 'Preparing…' : label}</span>
+      {isGenerating ? (
+        <>
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          <span>Saving...</span>
+        </>
+      ) : (
+        <>
+          {!hideIcon && <Download className={cn('w-5 h-5', iconClassName)} />}
+          <span>{label}</span>
+        </>
+      )}
     </button>
   );
 }

@@ -69,11 +69,13 @@ export async function fetchCardByPublicId(
   if (supabaseUrl) {
     try {
       const edgeFunctionUrl = `${supabaseUrl}/functions/v1/get-public-card/${publicId}`;
+      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
       const response = await fetch(edgeFunctionUrl, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${anonKey}`,
         },
         next: { revalidate: 60 }, // Cache for 60 seconds
       });

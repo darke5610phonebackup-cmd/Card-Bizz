@@ -41,6 +41,7 @@ export function createWhatsAppLink(phone: string | null): string | null {
  * Get initials from name
  */
 export function getInitials(name: string): string {
+  if (!name) return '';
   return name
     .split(' ')
     .map(part => part[0])
